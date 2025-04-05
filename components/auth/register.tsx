@@ -144,6 +144,6 @@ const SignupScreen = () => {
       {error && <Text className="text-red-500 mt-4 text-center">{error}</Text>}
     </View>
   );
-};
+}
 
 export default SignupScreen;

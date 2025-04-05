@@ -1,18 +1,13 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-import { RootState } from "../store";
 
-const API_URL = process.env.AUTH_API_URL; // Replace with your local IP
+const API_URL = process.env.AUTH_API_URL; 
 
-// Async action for user registration
-// Async action for user registration
 export const registerUser = createAsyncThunk(
   "auth/registerUser",
   async (userData: { name: string; email: string; password: string }, { rejectWithValue }) => {
     try {
       const response = await axios.post(`${API_URL}/register`, userData);
-      console.log("url:", API_URL);
-      console.log("data:", response.data);
 
       // If registration is successful, return the user and token
       return { user: response.data.user, token: response.data.token };
@@ -28,7 +23,6 @@ export const loginUser = createAsyncThunk(
   async (credentials: { email: string; password: string }, { rejectWithValue }) => {
     try {
       const response = await axios.post(`${API_URL}/login`, credentials);
-      console.log("url:", API_URL);
       return { user: response.data.user, token: response.data.token };
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || "Invalid credentials");
