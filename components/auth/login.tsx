@@ -138,6 +138,13 @@ const LoginScreen = () => {
             </Text>
           )}
 
+          {/* Forgot Password Button */}
+          <TouchableOpacity onPress={() => router.push("/(Auth)/resetPassword" as never)}>
+            <Text className="text-blue-600 text-sm mb-4 text-right">
+              Forgot Password?
+            </Text>
+          </TouchableOpacity>
+
           {/* Login Button */}
           <TouchableOpacity
             onPress={handleSubmit(onSubmit)}
