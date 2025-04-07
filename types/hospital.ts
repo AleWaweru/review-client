@@ -15,5 +15,7 @@ export interface HospitalData {
     loading: boolean;
     hospital: Hospital | null;
     error: string | null;
+    hospitals: Hospital[];         // New
+    selectedHospital: Hospital | null; // New
   }
   

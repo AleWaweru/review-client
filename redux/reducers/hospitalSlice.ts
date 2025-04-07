@@ -36,11 +36,40 @@ export const loginHospital = createAsyncThunk<Hospital, { email: string; passwor
   }
 );
 
+// Fetch all hospitals (public access)
+export const fetchAllHospitals = createAsyncThunk<Hospital[]>(
+  "hospital/fetchAll",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await axios.get(`${API_URL}/allHospitals`);
+      return response.data.hospitals;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data?.message || "Failed to fetch hospitals");
+    }
+  }
+);
+
+// Fetch hospital by ID (public access)
+export const fetchHospitalById = createAsyncThunk<Hospital, string>(
+  "hospital/fetchById",
+  async (id, { rejectWithValue }) => {
+    try {
+      const response = await axios.get(`${API_URL}/${id}`);
+      return response.data.hospital;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data?.message || "Failed to fetch hospital");
+    }
+  }
+);
+
+
 // Initial state
 const initialState: HospitalState = {
   loading: false,
   hospital: null,
   error: null,
+  hospitals: [],
+  selectedHospital: null,
 };
 
 // Slice
@@ -50,6 +79,7 @@ const hospitalSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
+    //create hospital
       .addCase(createHospital.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -61,7 +91,8 @@ const hospitalSlice = createSlice({
       .addCase(createHospital.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
-      })      
+      })
+      //login hospital      
       .addCase(loginHospital.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -73,6 +104,34 @@ const hospitalSlice = createSlice({
       .addCase(loginHospital.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message || "Failed to login hospital";
+      })
+
+      // get all hospitals
+      .addCase(fetchAllHospitals.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchAllHospitals.fulfilled, (state, action: PayloadAction<Hospital[]>) => {
+        state.loading = false;
+        state.hospitals = action.payload;
+      })
+      .addCase(fetchAllHospitals.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+
+      // get hospital by id
+      .addCase(fetchHospitalById.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchHospitalById.fulfilled, (state, action: PayloadAction<Hospital>) => {
+        state.loading = false;
+        state.selectedHospital = action.payload;
+      })
+      .addCase(fetchHospitalById.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
       });
   },
 });
