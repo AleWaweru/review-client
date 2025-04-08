@@ -1,7 +1,7 @@
 import { Hospital, HospitalData, HospitalState } from "@/types/hospital";
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
-const API_URL = process.env.HOSPITAL_API_URL; 
+const API_URL = process.env.HOSPITAL_API_URL;
 
 // Async thunk to create hospital
 export const createHospital = createAsyncThunk<Hospital, HospitalData>(
@@ -20,21 +20,25 @@ export const createHospital = createAsyncThunk<Hospital, HospitalData>(
       console.log("Hospital data:", response.data);
       return response.data;
     } catch (error: any) {
-      console.log("Error creating hospital:", error.response?.data || error.message);
-      return rejectWithValue(error.response?.data?.message || "Failed to create hospital");
+      console.log(
+        "Error creating hospital:",
+        error.response?.data || error.message
+      );
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to create hospital"
+      );
     }
   }
 );
 
-
 // Async thunk to login hospital
-export const loginHospital = createAsyncThunk<Hospital, { email: string; password: string }>(
-  "hospital/login",
-  async (data) => {
-    const response = await axios.post(`${API_URL}/login`, data);
-    return response.data;
-  }
-);
+export const loginHospital = createAsyncThunk<
+  Hospital,
+  { email: string; password: string }
+>("hospital/login", async (data) => {
+  const response = await axios.post(`${API_URL}/login`, data);
+  return response.data;
+});
 
 // Fetch all hospitals (public access)
 export const fetchAllHospitals = createAsyncThunk<Hospital[]>(
@@ -44,7 +48,9 @@ export const fetchAllHospitals = createAsyncThunk<Hospital[]>(
       const response = await axios.get(`${API_URL}/allHospitals`);
       return response.data.hospitals;
     } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || "Failed to fetch hospitals");
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to fetch hospitals"
+      );
     }
   }
 );
@@ -55,13 +61,50 @@ export const fetchHospitalById = createAsyncThunk<Hospital, string>(
   async (id, { rejectWithValue }) => {
     try {
       const response = await axios.get(`${API_URL}/${id}`);
+      console.log("hospital data:", response.data.hospital);
       return response.data.hospital;
     } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || "Failed to fetch hospital");
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to fetch hospital"
+      );
     }
   }
 );
 
+// Add this to your hospitalSlice file
+
+export const updateHospitalProfile = createAsyncThunk<
+  Hospital,
+  { id: string; data: Partial<Hospital> }
+>(
+  "hospital/updateProfile",
+  async ({ id, data }, { getState, rejectWithValue }) => {
+    console.log("id", id);
+    try {
+      const state: any = getState();
+      const token = state.auth.token;
+
+      // Make sure to use PUT or PATCH to update the profile
+      const response = await axios.put(
+        `${API_URL}/update-profile/${id}`,
+        data,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      
+      console.log("Updating hospital with ID:", id);
+      console.log("data updated:", response.data);
+      return response.data.hospital; // Assuming the response returns the updated hospital object
+    } catch (error: any) {
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to update profile"
+      );
+    }
+  }
+);
 
 // Initial state
 const initialState: HospitalState = {
@@ -79,28 +122,34 @@ const hospitalSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-    //create hospital
+      //create hospital
       .addCase(createHospital.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(createHospital.fulfilled, (state, action: PayloadAction<Hospital>) => {
-        state.loading = false;
-        state.hospital = action.payload;
-      })
+      .addCase(
+        createHospital.fulfilled,
+        (state, action: PayloadAction<Hospital>) => {
+          state.loading = false;
+          state.hospital = action.payload;
+        }
+      )
       .addCase(createHospital.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       })
-      //login hospital      
+      //login hospital
       .addCase(loginHospital.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(loginHospital.fulfilled, (state, action: PayloadAction<Hospital>) => {
-        state.loading = false;
-        state.hospital = action.payload;
-      })
+      .addCase(
+        loginHospital.fulfilled,
+        (state, action: PayloadAction<Hospital>) => {
+          state.loading = false;
+          state.hospital = action.payload;
+        }
+      )
       .addCase(loginHospital.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message || "Failed to login hospital";
@@ -111,10 +160,13 @@ const hospitalSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(fetchAllHospitals.fulfilled, (state, action: PayloadAction<Hospital[]>) => {
-        state.loading = false;
-        state.hospitals = action.payload;
-      })
+      .addCase(
+        fetchAllHospitals.fulfilled,
+        (state, action: PayloadAction<Hospital[]>) => {
+          state.loading = false;
+          state.hospitals = action.payload;
+        }
+      )
       .addCase(fetchAllHospitals.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
@@ -125,11 +177,32 @@ const hospitalSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(fetchHospitalById.fulfilled, (state, action: PayloadAction<Hospital>) => {
-        state.loading = false;
-        state.selectedHospital = action.payload;
-      })
+      .addCase(
+        fetchHospitalById.fulfilled,
+        (state, action: PayloadAction<Hospital>) => {
+          state.loading = false;
+          state.selectedHospital = action.payload;
+          console.log("selected hospital:", action.payload);
+        }
+      )
       .addCase(fetchHospitalById.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+
+      // update hospital profile
+      .addCase(updateHospitalProfile.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        updateHospitalProfile.fulfilled,
+        (state, action: PayloadAction<Hospital>) => {
+          state.loading = false;
+          state.hospital = action.payload;
+        }
+      )
+      .addCase(updateHospitalProfile.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       });

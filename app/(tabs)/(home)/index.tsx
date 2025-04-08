@@ -39,10 +39,8 @@ export default function Index() {
         )}
       </View>
 
-      <Text className="text-blue-800 mt-16">Welcome Again.</Text>
-
       {/* Search Bar */}
-      <View className="flex-row mt-4 mb-2 px-4 w-full max-w-md">
+      <View className="flex-row mt-[5rem] mb-2 px-4 w-full max-w-md">
         <TextInput
           value={search}
           onChangeText={setSearch}

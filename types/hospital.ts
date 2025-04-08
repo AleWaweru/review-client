@@ -5,10 +5,17 @@ export interface HospitalData {
   }
   
   export interface Hospital {
-    id: string;
     name: string;
     email: string;
-    // Add more fields as needed
+    phone:string;
+    website:string;
+    image:string;
+    address:{
+      street: string;
+      city:string;
+      country:string;
+        }
+    
   }
   
   export interface HospitalState {
