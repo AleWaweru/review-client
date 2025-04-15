@@ -1,38 +1,59 @@
-import React, { useEffect } from 'react';
-import { View, Text, FlatList, TouchableOpacity } from 'react-native';
-import { useDispatch, useSelector } from 'react-redux';
-import { useRouter } from 'expo-router';
-import { fetchAllHospitals } from '@/redux/reducers/hospitalSlice';
-import { AppDispatch } from '@/redux/store';
+import React, { useEffect } from "react";
+import { View, Text, FlatList, TouchableOpacity } from "react-native";
+import { useDispatch, useSelector } from "react-redux";
+import { useRouter } from "expo-router";
+import { fetchAllHospitals } from "@/redux/reducers/hospitalSlice";
+import { AppDispatch } from "@/redux/store";
 
 interface AllHospitalsProps {
-  searchName?: string; // Accept the name as a prop
+  searchName?: string;
+  searchLocation?: string;
 }
 
-const AllHospitals: React.FC<AllHospitalsProps> = ({ searchName }) => {
+const AllHospitals: React.FC<AllHospitalsProps> = ({
+  searchName,
+  searchLocation,
+}) => {
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
 
-  const { hospitals, loading, error } = useSelector((state: any) => state.hospital);
+  const { hospitals, loading, error } = useSelector(
+    (state: any) => state.hospital
+  );
 
   useEffect(() => {
     dispatch(fetchAllHospitals());
   }, [dispatch]);
 
-  if (loading) return <Text className="text-center text-lg mt-4">Loading...</Text>;
-  if (error) return <Text className="text-red-500 text-center mt-4">Error: {error}</Text>;
+  if (loading)
+    return <Text className="text-center text-lg mt-4">Loading...</Text>;
+  if (error)
+    return (
+      <Text className="text-red-500 text-center mt-4">Error: {error}</Text>
+    );
 
   // Sort hospitals alphabetically by name (case insensitive)
   const sortedHospitals = [...hospitals].sort((a, b) =>
-    a.name.localeCompare(b.name, 'en', { sensitivity: 'base' })
+    a.name.localeCompare(b.name, "en", { sensitivity: "base" })
   );
 
-  // Filter hospitals by search name (if provided)
-  const filteredHospitals = searchName
-    ? sortedHospitals.filter(hospital =>
-        hospital.name.toLowerCase().includes(searchName.toLowerCase())
-      )
-    : sortedHospitals;
+  // Filter hospitals by name and location
+  const filteredHospitals = sortedHospitals.filter((hospital) => {
+    const nameMatch = searchName
+      ? hospital.name.toLowerCase().includes(searchName.toLowerCase())
+      : true;
+
+    const locationMatch = searchLocation
+      ? hospital.address?.city
+          ?.toLowerCase()
+          .includes(searchLocation.toLowerCase()) ||
+        hospital.address?.street
+          ?.toLowerCase()
+          .includes(searchLocation.toLowerCase())
+      : true;
+
+    return nameMatch && locationMatch;
+  });
 
   return (
     <View className="flex-1 p-4 bg-gray-100 w-full">
@@ -45,10 +66,21 @@ const AllHospitals: React.FC<AllHospitalsProps> = ({ searchName }) => {
           renderItem={({ item }) => (
             <TouchableOpacity
               className="bg-white p-4 rounded-xl mb-4 shadow-md"
-              onPress={() => router.push({ pathname: "/hospital/[id]", params: { id: item._id } })}
+              onPress={() =>
+                router.push({
+                  pathname: "/hospital/[id]",
+                  params: { id: item._id },
+                })
+              }
             >
-              <Text className="text-xl font-semibold text-gray-800">{item.name}</Text>
-              <Text className="text-sm text-gray-500">{item.email}</Text>
+              <Text className="text-xl font-semibold text-gray-800">
+                {item.name}
+              </Text>
+              <Text className="text-sm text-gray-600">
+                {item.address
+                  ? `${item.address.street}, ${item.address.city}, ${item.address.country}`
+                  : "Address not available"}
+              </Text>
             </TouchableOpacity>
           )}
         />

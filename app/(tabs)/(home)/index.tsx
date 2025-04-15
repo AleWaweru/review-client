@@ -13,7 +13,10 @@ export default function Index() {
   const router = useRouter();
   const dispatch = useDispatch();
   const params = useSearchParams();
-  const [search, setSearch] = useState(params.get("name") ?? "");  
+  const [search, setSearch] = useState(params.get("name") ?? "");
+  const [searchLocation, setSearchLocation] = useState(
+    params.get("location") ?? ""
+  );
 
   const isAuthenticated = useSelector((state: RootState) => !!state.auth.token);
   const userRole = useSelector((state: RootState) => state.auth.user?.role);
@@ -24,7 +27,7 @@ export default function Index() {
   };
 
   const handleSearch = () => {
-    router.push(`/?name=${search}`);
+    router.push(`/?name=${search}&location=${searchLocation}`);
   };
 
   return (
@@ -55,10 +58,25 @@ export default function Index() {
         </TouchableOpacity>
       </View>
 
+      <View className="flex-row mb-2 px-4 w-full max-w-md">
+        <TextInput
+          value={searchLocation}
+          onChangeText={setSearchLocation}
+          placeholder="Search by city or street"
+          className="flex-1 border border-gray-300 rounded-md p-2"
+        />
+        <TouchableOpacity
+          onPress={handleSearch}
+          className="bg-blue-600 p-2 rounded-r-md"
+        >
+          <Text className="text-white font-bold">Search</Text>
+        </TouchableOpacity>
+      </View>
+
       {/* Hospital List */}
-      <View className="flex-1 text-gray-500 w-full items-center justify-center bg-gray-100">
+      <View className="flex-1 text-gray-500 w-full mb-9 items-center justify-center bg-gray-100">
         <View className="w-full max-w-md h-full bg-white py-6">
-          <AllHospitals searchName={search} />
+          <AllHospitals searchName={search} searchLocation={searchLocation} />
         </View>
       </View>
 

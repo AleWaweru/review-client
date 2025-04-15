@@ -10,6 +10,7 @@ export interface HospitalData {
     phone:string;
     website:string;
     image:string;
+    images:string[];
     address:{
       street: string;
       city:string;

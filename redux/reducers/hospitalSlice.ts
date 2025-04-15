@@ -182,7 +182,7 @@ const hospitalSlice = createSlice({
         (state, action: PayloadAction<Hospital>) => {
           state.loading = false;
           state.selectedHospital = action.payload;
-          console.log("selected hospital:", action.payload);
+         
         }
       )
       .addCase(fetchHospitalById.rejected, (state, action) => {

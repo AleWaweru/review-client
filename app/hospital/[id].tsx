@@ -12,22 +12,22 @@ import {
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocalSearchParams, useRouter } from "expo-router";
-
-import surgeryIcon from "@/assets/images/surgery.png";
-import hospitalIcon from "@/assets/images/hospital.png";
-import hospitalWardIcon from "@/assets/images/hospital-ward.png";
+import { Linking } from "react-native";
 
 const HospitalDetail = () => {
   const { id } = useLocalSearchParams();
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
 
+  const [selectedImage, setSelectedImage] = useState<any>(null);
+  const [modalVisible, setModalVisible] = useState(false);
   const { selectedHospital, loading, error } = useSelector(
     (state: any) => state.hospital
   );
 
-  const [selectedImage, setSelectedImage] = useState<any>(null);
-  const [modalVisible, setModalVisible] = useState(false);
+  const { user } = useSelector((state: any) => state.auth);
+
+  const isOwner = user?.hospitalId === selectedHospital?._id;
 
   useEffect(() => {
     if (id) {
@@ -37,33 +37,28 @@ const HospitalDetail = () => {
 
   useEffect(() => {
     if (selectedHospital) {
-      const fallbackImages = [
-        selectedHospital?.image ? { uri: selectedHospital.image } : surgeryIcon,
-        hospitalIcon,
-        hospitalWardIcon,
-        surgeryIcon,
-      ];
+      const imageList = [];
 
-      const hospitalImgs =
-        selectedHospital?.images?.length > 0
-          ? selectedHospital.images.map((img: string) => ({ uri: img }))
-          : fallbackImages;
+      if (selectedHospital.image) {
+        imageList.push({ uri: selectedHospital.image });
+      }
 
-      setSelectedImage(hospitalImgs[1]);
+      if (Array.isArray(selectedHospital.images)) {
+        selectedHospital.images.forEach((img: string) => {
+          imageList.push({ uri: img });
+        });
+      }
+
+      if (imageList.length > 0) {
+        setSelectedImage(imageList[0]); // first image shown
+      }
     }
   }, [selectedHospital]);
 
-  const hospitalImages: any[] =
-    selectedHospital?.images?.length > 0
-      ? selectedHospital.images.map((img: string) => ({ uri: img }))
-      : [
-          selectedHospital?.image
-            ? { uri: selectedHospital.image }
-            : surgeryIcon,
-          hospitalIcon,
-          hospitalWardIcon,
-          surgeryIcon,
-        ];
+  if (!selectedHospital)
+    return (
+      <Text className="text-center mt-4 text-gray-500">No data found</Text>
+    );
 
   if (loading)
     return (
@@ -71,15 +66,12 @@ const HospitalDetail = () => {
         Loading hospital...
       </Text>
     );
+
   if (error)
     return (
       <Text className="text-red-500 text-center mt-4 font-semibold">
         Error: {error}
       </Text>
-    );
-  if (!selectedHospital)
-    return (
-      <Text className="text-center mt-4 text-gray-500">No data found</Text>
     );
 
   return (
@@ -94,71 +86,89 @@ const HospitalDetail = () => {
               ← Back to Home
             </Text>
           </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => router.push(`/editHospital/${id}`)}
-            className="bg-green-600 py-2 px-5 rounded-full shadow-md"
-          >
-            <Text className="text-white text-sm font-semibold">✏️ Edit</Text>
-          </TouchableOpacity>
+
+          {isOwner && (
+            <TouchableOpacity
+              onPress={() => router.push(`/editHospital/${id}`)}
+              className="bg-green-600 py-2 px-5 rounded-full shadow-md"
+            >
+              <Text className="text-white text-sm font-semibold">✏️ Edit</Text>
+            </TouchableOpacity>
+          )}
         </View>
 
         <View className="bg-white rounded-2xl p-6 h-fit mb-9 shadow-xl">
           <Text className="text-3xl font-extrabold text-blue-800 mb-3">
             {selectedHospital.name}
           </Text>
-          <Text className="text-gray-600 text-base mb-3">
-            📧 {selectedHospital.email}
-          </Text>
+        
 
-          <TouchableOpacity
-            onPress={() => setModalVisible(true)}
-            className="h-48 w-full rounded-xl bg-gray-100 items-center justify-center mb-4 overflow-hidden"
-          >
-            <Image
-              source={selectedImage}
-              resizeMode="cover"
-              className="w-full h-full rounded-xl"
-            />
-          </TouchableOpacity>
+          {selectedImage && (
+            <TouchableOpacity
+              onPress={() => setModalVisible(true)}
+              className="h-64 w-full rounded-xl bg-gray-100 items-center justify-center mb-4 overflow-hidden"
+            >
+              <Image
+                source={selectedImage}
+                resizeMode="cover"
+                className="w-full h-full rounded-xl"
+              />
+            </TouchableOpacity>
+          )}
 
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            className="mb-4"
-          >
-            {hospitalImages.map((img, index) => (
-              <TouchableOpacity
-                key={index}
-                onPress={() => setSelectedImage(img)}
-                className={`w-20 h-20 rounded-md overflow-hidden mr-3 ${
-                  selectedImage === img ? "border-2 border-blue-500" : ""
-                }`}
-              >
-                <Image
-                  source={img}
-                  resizeMode="cover"
-                  className="w-full h-full"
-                />
-              </TouchableOpacity>
-            ))}
-          </ScrollView>
+          {selectedHospital.images?.length > 0 && (
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              className="mb-4"
+            >
+              {selectedHospital.images.map(
+                (img: any, index: React.Key | null | undefined) => (
+                  <TouchableOpacity
+                    key={index}
+                    onPress={() => setSelectedImage({ uri: img })}
+                    className={`w-20 h-20 rounded-md overflow-hidden mr-3 ${
+                      selectedImage?.uri === img
+                        ? "border-2 border-blue-500"
+                        : ""
+                    }`}
+                  >
+                    <Image
+                      source={{ uri: img }}
+                      resizeMode="cover"
+                      className="w-full h-full"
+                    />
+                  </TouchableOpacity>
+                )
+              )}
+            </ScrollView>
+          )}
 
-          <Text className="text-gray-700">
-            📅 Created At:{" "}
-            <Text className="font-medium">
-              {new Date(selectedHospital.createdAt).toLocaleDateString()}
-            </Text>
-          </Text>
           <Text className="text-gray-700 mb-1">
             📞 Phone:{" "}
             <Text className="font-medium">{selectedHospital.phone}</Text>
           </Text>
-          <Text className="text-gray-700 mb-4">
-            🌐 Website:{" "}
-            <Text className="underline text-blue-500">
-              {selectedHospital.website}
-            </Text>
+          <Text className="text-gray-600 text-base mb-3">
+            📧 {selectedHospital.email}
           </Text>
+          <TouchableOpacity
+            onPress={() => {
+              if (selectedHospital.website) {
+                const domain = selectedHospital.website.trim();
+                const url = domain.startsWith("http")
+                  ? domain
+                  : `https://www.${domain}`;
+                Linking.openURL(url);
+              }
+            }}
+          >
+            <Text className="text-gray-700 mb-4">
+              🌐 Website:{" "}
+              <Text className="underline text-blue-500">
+                {selectedHospital.website}
+              </Text>
+            </Text>
+          </TouchableOpacity>
 
           {selectedHospital.address && (
             <View className="mb-4">
@@ -198,7 +208,6 @@ const HospitalDetail = () => {
         </View>
       </ScrollView>
 
-      {/* Modal for Fullscreen Image Preview */}
       <Modal
         visible={modalVisible}
         transparent={true}
