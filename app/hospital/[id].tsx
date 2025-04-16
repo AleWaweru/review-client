@@ -13,6 +13,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { Linking } from "react-native";
+import ReviewHospital from "@/components/review/review";
 
 const HospitalDetail = () => {
   const { id } = useLocalSearchParams();
@@ -186,6 +187,8 @@ const HospitalDetail = () => {
               </Text>
             </View>
           )}
+
+          <ReviewHospital/>
 
           {selectedHospital.qrCode && (
             <View className="mt-6 items-center">

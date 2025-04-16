@@ -1,4 +1,4 @@
-import { Text, View, TouchableOpacity, TextInput } from "react-native";
+import { Text, View, TouchableOpacity, TextInput, Image } from "react-native";
 import { Link, useRouter, SearchParams } from "expo-router";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
@@ -20,6 +20,9 @@ export default function Index() {
 
   const isAuthenticated = useSelector((state: RootState) => !!state.auth.token);
   const userRole = useSelector((state: RootState) => state.auth.user?.role);
+  const profileImage = useSelector(
+    (state: RootState) => state.profile.profile?.image
+  );
 
   const handleLogout = () => {
     dispatch(logoutUser());
@@ -33,12 +36,23 @@ export default function Index() {
   return (
     <View className="flex-1 items-center justify-center bg-white">
       {/* Header */}
-      <View className="absolute top-0 w-full flex-row justify-between p-4 bg-blue-600">
+      <View className="absolute top-0 w-full flex-row items-center justify-between p-4 bg-blue-600">
         <Text className="text-white text-lg font-bold">RateMe</Text>
+
         {isAuthenticated && (
-          <TouchableOpacity onPress={handleLogout}>
-            <Text className="text-white">Logout</Text>
-          </TouchableOpacity>
+          <View className="flex-row items-center space-x-3">
+            {profileImage ? (
+              <Image
+                source={{ uri: profileImage }}
+                className="w-10 h-10 rounded-full"
+              />
+            ) : (
+              <Icon name="person" size={24} color="white" />
+            )}
+            <TouchableOpacity onPress={handleLogout}>
+              <Text className="text-white">Logout</Text>
+            </TouchableOpacity>
+          </View>
         )}
       </View>
 
@@ -74,7 +88,7 @@ export default function Index() {
       </View>
 
       {/* Hospital List */}
-      <View className="flex-1 text-gray-500 w-full mb-9 items-center justify-center bg-gray-100">
+      <View className="flex-1 text-gray-500 w-full mb-12 items-center justify-center bg-gray-100">
         <View className="w-full max-w-md h-full bg-white py-6">
           <AllHospitals searchName={search} searchLocation={searchLocation} />
         </View>

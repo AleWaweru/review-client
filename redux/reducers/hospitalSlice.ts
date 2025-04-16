@@ -46,6 +46,7 @@ export const fetchAllHospitals = createAsyncThunk<Hospital[]>(
   async (_, { rejectWithValue }) => {
     try {
       const response = await axios.get(`${API_URL}/allHospitals`);
+      console.log("hospitals data:", response.data.hospitals);
       return response.data.hospitals;
     } catch (error: any) {
       return rejectWithValue(
