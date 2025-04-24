@@ -216,39 +216,39 @@ const HospitalDetail = () => {
           </TouchableOpacity>
 
           {/* Address */}
-          {selectedHospital.address && (
-            <View className="mb-4">
-              <Text className="text-gray-700 font-semibold text-lg mb-2">
-                📍 Address
+          {selectedHospital.location && (
+            <View className="mb-6 px-4 py-3 bg-white rounded-xl shadow-md">
+              <Text className="text-blue-700 font-bold text-xl mb-3">
+                📍 Location
               </Text>
-              <Text className="text-gray-600">
-                Street: {selectedHospital.address.street}
-              </Text>
-              <Text className="text-gray-600">
-                City: {selectedHospital.address.city}
-              </Text>
-              <Text className="text-gray-600">
-                Country: {selectedHospital.address.country}
-              </Text>
+              <View className="space-y-1">
+                <Text className="text-gray-500 text-base">
+                  <Text className="font-semibold text-gray-800">Address:</Text>{" "}
+                  {selectedHospital.location}
+                </Text>
+             
+              </View>
             </View>
           )}
 
           {/* Review Section */}
-          {!showReviewForm ? (
-            <TouchableOpacity
-              onPress={() => setShowScanner(true)}
-              className="bg-blue-600 px-6 py-3 rounded-full mt-6"
-            >
-              <Text className="text-white font-semibold text-center">
-                Scan QR to Leave a Review
-              </Text>
-            </TouchableOpacity>
-          ) : (
-            <ReviewForm
-              hospitalId={selectedHospital._id}
-              onClose={() => setShowReviewForm(false)}
-            />
-          )}
+
+          {!isOwner &&
+            (!showReviewForm ? (
+              <TouchableOpacity
+                onPress={() => setShowScanner(true)}
+                className="bg-blue-600 px-6 py-3 rounded-full mt-6"
+              >
+                <Text className="text-white font-semibold text-center">
+                  Scan QR to Leave a Review
+                </Text>
+              </TouchableOpacity>
+            ) : (
+              <ReviewForm
+                hospitalId={selectedHospital._id}
+                onClose={() => setShowReviewForm(false)}
+              />
+            ))}
 
           {/* Display Reviews */}
           <ReviewDisplay hospitalId={selectedHospital._id} />
@@ -270,6 +270,14 @@ const HospitalDetail = () => {
                   {new Date(selectedHospital.qrCodeExpiresAt).toLocaleString()}
                 </Text>
               )}
+              <TouchableOpacity
+                onPress={() => dispatch(fetchHospitalById(id as string))}
+                className="mt-4 bg-blue-500 px-5 py-2 rounded-full"
+              >
+                <Text className="text-white font-semibold">
+                  🔄 Refresh QR Code
+                </Text>
+              </TouchableOpacity>
             </View>
           )}
         </View>

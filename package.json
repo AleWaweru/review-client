@@ -26,6 +26,7 @@
     "expo-av": "^15.0.2",
     "expo-barcode-scanner": "^13.0.1",
     "expo-blur": "~14.0.3",
+    "expo-camera": "~16.0.18",
     "expo-constants": "~17.0.8",
     "expo-font": "~13.0.4",
     "expo-haptics": "~14.0.1",
@@ -46,6 +47,9 @@
     "react-native": "0.76.8",
     "react-native-dotenv": "^3.4.11",
     "react-native-gesture-handler": "~2.20.2",
+    "react-native-get-random-values": "^1.11.0",
+    "react-native-google-places-autocomplete": "^2.5.7",
+    "react-native-maps": "^1.22.6",
     "react-native-reanimated": "^3.16.2",
     "react-native-safe-area-context": "^4.12.0",
     "react-native-scan-barcode": "^3.1.7",
@@ -57,7 +61,7 @@
     "styled-components": "^6.1.17",
     "tailwindcss": "^3.4.17",
     "toastify-react-native": "^7.1.1",
-    "expo-camera": "~16.0.18"
+    "uuid": "^11.1.0"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",

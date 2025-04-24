@@ -1,11 +1,14 @@
 // types/review.ts
-
+export interface ReviewUser{
+  _id: string;
+  name: string
+}
 export interface Review {
   _id?: string;
   hospitalId: string;
   rating: number;
   text: string;
-  user:  string;
+  user:  ReviewUser;
   createdAt?: string;
   updatedAt?: string;
 }

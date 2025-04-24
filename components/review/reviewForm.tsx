@@ -27,7 +27,10 @@ const ReviewForm: React.FC<ReviewFormProps> = ({ hospitalId, onClose }) => {
           hospitalId,
           rating,
           text: reviewText,
-          user: user._id,
+          user: {
+            _id: user._id,
+            name: user.name,
+          },
         })
       ).unwrap();
 
@@ -59,7 +62,9 @@ const ReviewForm: React.FC<ReviewFormProps> = ({ hospitalId, onClose }) => {
 
   return (
     <View>
-      <Text className="text-lg font-bold mb-2 text-gray-800">Leave a Review</Text>
+      <Text className="text-lg font-bold mb-2 text-gray-800">
+        Leave a Review
+      </Text>
 
       <Text className="mb-1 text-gray-700">Your Rating:</Text>
       {renderStars(rating)}

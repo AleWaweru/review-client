@@ -3,7 +3,7 @@ import { View, Text, FlatList, TouchableOpacity } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "expo-router";
 import { fetchAllHospitals } from "@/redux/reducers/hospitalSlice";
-import { AppDispatch } from "@/redux/store";
+import { AppDispatch, RootState } from "@/redux/store";
 
 interface AllHospitalsProps {
   searchName?: string;
@@ -18,7 +18,7 @@ const AllHospitals: React.FC<AllHospitalsProps> = ({
   const router = useRouter();
 
   const { hospitals, loading, error } = useSelector(
-    (state: any) => state.hospital
+    (state: RootState) => state.hospital
   );
 
   useEffect(() => {
@@ -27,29 +27,23 @@ const AllHospitals: React.FC<AllHospitalsProps> = ({
 
   if (loading)
     return <Text className="text-center text-lg mt-4">Loading...</Text>;
+
   if (error)
     return (
       <Text className="text-red-500 text-center mt-4">Error: {error}</Text>
     );
 
-  // Sort hospitals alphabetically by name (case insensitive)
   const sortedHospitals = [...hospitals].sort((a, b) =>
     a.name.localeCompare(b.name, "en", { sensitivity: "base" })
   );
 
-  // Filter hospitals by name and location
   const filteredHospitals = sortedHospitals.filter((hospital) => {
     const nameMatch = searchName
       ? hospital.name.toLowerCase().includes(searchName.toLowerCase())
       : true;
 
     const locationMatch = searchLocation
-      ? hospital.address?.city
-          ?.toLowerCase()
-          .includes(searchLocation.toLowerCase()) ||
-        hospital.address?.street
-          ?.toLowerCase()
-          .includes(searchLocation.toLowerCase())
+      ? hospital.location?.toLowerCase().includes(searchLocation.toLowerCase())
       : true;
 
     return nameMatch && locationMatch;
@@ -77,9 +71,7 @@ const AllHospitals: React.FC<AllHospitalsProps> = ({
                 {item.name}
               </Text>
               <Text className="text-sm text-gray-600">
-                {item.address
-                  ? `${item.address.street}, ${item.address.city}, ${item.address.country}`
-                  : "Address not available"}
+                {item.location || "Location not available"}
               </Text>
             </TouchableOpacity>
           )}

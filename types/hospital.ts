@@ -5,17 +5,14 @@ export interface HospitalData {
   }
   
   export interface Hospital {
+    _id: string;
     name: string;
     email: string;
     phone:string;
     website:string;
     image:string;
     images:string[];
-    address:{
-      street: string;
-      city:string;
-      country:string;
-        }
+    location:string;
     
   }
   
