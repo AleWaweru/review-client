@@ -3,6 +3,7 @@ import { Provider, useSelector } from "react-redux";
 import { Stack, useRouter, Slot } from "expo-router";
 import { store } from "../redux/store";
 import { RootState } from "../redux/store";
+import 'react-native-get-random-values';
 
 function AuthWrapper() {
   const router = useRouter();

@@ -5,15 +5,22 @@ export interface HospitalData {
   }
   
   export interface Hospital {
-    id: string;
+    _id: string;
     name: string;
     email: string;
-    // Add more fields as needed
+    phone:string;
+    website:string;
+    image:string;
+    images:string[];
+    location:string;
+    
   }
   
   export interface HospitalState {
     loading: boolean;
     hospital: Hospital | null;
     error: string | null;
+    hospitals: Hospital[];         // New
+    selectedHospital: Hospital | null; // New
   }
   

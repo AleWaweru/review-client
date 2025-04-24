@@ -4,6 +4,7 @@ export default function DetailsScreen() {
   return (
     <View style={styles.container}>
       <Text>Details</Text>
+     
     </View>
   );
 }

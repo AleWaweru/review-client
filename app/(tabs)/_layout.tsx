@@ -8,7 +8,7 @@ export default function HomeLayout() {
       <Stack.Screen name="settings" />
       <Stack.Screen name="profile" />
          <Stack.Screen name="signupHospital" options={{ headerShown: false }} />
-      
+         <Stack.Screen name = "updateProfile"/>
     </Stack>
   );
 }
