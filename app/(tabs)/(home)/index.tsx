@@ -87,8 +87,19 @@ export default function Index() {
         </TouchableOpacity>
       </View>
 
+      {userRole === "admin" && (
+        <TouchableOpacity
+          onPress={() => router.push("/(tabs)/signupHospital")}
+          className="mt-4 bg-blue-600 px-4 py-2 rounded-lg"
+        >
+          <Text className="text-white font-semibold">
+            Create Hospital Account
+          </Text>
+        </TouchableOpacity>
+      )}
+
       {/* Hospital List */}
-      <View className="flex-1 text-gray-500 w-full mb-12 items-center justify-center bg-gray-100">
+      <View className="flex-1 text-gray-500 w-full  items-center justify-center bg-gray-100">
         <View className="w-full max-w-md h-full bg-white py-6">
           <AllHospitals searchName={search} searchLocation={searchLocation} />
         </View>
@@ -116,17 +127,6 @@ export default function Index() {
             </TouchableOpacity>
           </Link>
         </View>
-
-        {userRole === "admin" && (
-          <TouchableOpacity
-            onPress={() => router.push("/(tabs)/signupHospital")}
-            className="mt-4 bg-blue-600 px-4 py-2 rounded-lg"
-          >
-            <Text className="text-white font-semibold">
-              Create Hospital Account
-            </Text>
-          </TouchableOpacity>
-        )}
       </View>
     </View>
   );

@@ -50,7 +50,7 @@ const AllHospitals: React.FC<AllHospitalsProps> = ({
   });
 
   return (
-    <View className="flex-1 p-4 bg-gray-100 mb-10 w-full">
+    <View className="flex-1 p-4 bg-gray-100 mb-[6rem] w-full">
       {filteredHospitals.length === 0 ? (
         <Text className="text-center text-gray-500">No hospitals found.</Text>
       ) : (
@@ -59,7 +59,7 @@ const AllHospitals: React.FC<AllHospitalsProps> = ({
           keyExtractor={(item) => item._id}
           renderItem={({ item }) => (
             <TouchableOpacity
-              className="bg-white p-4 rounded-xl mb-4 shadow-md"
+              className="bg-white p-4 rounded-xl mb-2 shadow-md"
               onPress={() =>
                 router.push({
                   pathname: "/hospital/[id]",

@@ -1,22 +1,24 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, TextInput, ScrollView, Alert, Button } from "react-native";
-import { useDispatch, useSelector } from "react-redux";
 import {
-  createProfile,
-  updateProfile,
-  getProfile,
-} from "@/redux/reducers/profileSlice";
-import { RootState, AppDispatch } from "@/redux/store";
-import { useNavigation } from "@react-navigation/native";
+  View,
+  Text,
+  TextInput,
+  Button,
+  ActivityIndicator,
+  Alert,
+} from "react-native";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/redux/store";
+import { createProfile, getProfile, updateProfile } from "@/redux/reducers/profileSlice";
 import UploadProfilePhoto from "@/components/hospital/profile/UploadProfilePhoto";
+import ToastManager, { Toast } from 'toastify-react-native'
+import { useRouter } from "expo-router";
 
-const UpdateProfileScreen = () => {
+
+const ProfileForm = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const navigation = useNavigation();
-  const { profile, loading, error } = useSelector(
-    (state: RootState) => state.profile
-  );
-  console.log("profile", profile);
+  const { profile, loading, error } = useSelector((state: RootState) => state.profile);
+  const router = useRouter();
   const [formData, setFormData] = useState({
     phone: "",
     address: "",
@@ -25,7 +27,7 @@ const UpdateProfileScreen = () => {
 
   useEffect(() => {
     dispatch(getProfile());
-  }, []);
+  }, [dispatch]);
 
   useEffect(() => {
     if (profile) {
@@ -37,64 +39,63 @@ const UpdateProfileScreen = () => {
     }
   }, [profile]);
 
-  useEffect(() => {
-    if (error) Alert.alert("Error", error);
-  }, [error]);
+  const handleChange = (key: string, value: string) => {
+    setFormData((prev) => ({ ...prev, [key]: value }));
+  };
 
-  const handleSubmit = async () => {
-    console.log("Submit pressed");
-    console.log("Form data:", formData);
-
-    if (!formData.phone.trim() || !formData.address.trim()) {
-      Alert.alert("Validation Error", "Phone and Address are required.");
+  const handleSubmit = () => {
+    if (!formData.phone || !formData.address) {
+      Alert.alert("Validation Error", "Phone and address are required.");
       return;
     }
 
-    try {
-      if (profile) {
-        const updatedProfile = await dispatch(updateProfile(formData)).unwrap();
-        console.log("Updating Profile:", updatedProfile);
-      } else {
-        await dispatch(createProfile(formData)).unwrap();
-      }
-      navigation.goBack();
-    } catch (err) {
-      console.error("Error submitting profile:", err);
-      Alert.alert("Submission failed", "Could not save profile");
+    if (profile) {
+      dispatch(updateProfile(formData));
+      Toast.success('Successfully updated profile');
+      router.push("/(tabs)/profile");
+    } else {
+      dispatch(createProfile(formData));
+      Toast.success('Successfully created profile');
+      router.push("/(tabs)/profile");
     }
   };
 
   return (
-    <ScrollView className="bg-white p-4">
-      <Text className="text-xl font-bold text-center mb-4">
+    <View className="m-5 p-5 bg-white rounded-xl shadow">
+      <Text className="text-xl font-semibold mb-4 text-gray-800">
         {profile ? "Update Profile" : "Create Profile"}
       </Text>
 
-      <UploadProfilePhoto
-        image={formData.image}
-        setImage={(img) => setFormData({ ...formData, image: img })}
-      />
+      {error ? (
+        <Text className="text-red-500 mb-3">{error}</Text>
+      ) : null}
 
+<UploadProfilePhoto image={formData.image} setImage={(url) => handleChange("image", url)} />
       <TextInput
+        className="border border-gray-300 p-3 rounded-lg mb-3"
         placeholder="Phone"
         value={formData.phone}
-        onChangeText={(text) => setFormData({ ...formData, phone: text })}
-        className="border border-gray-300 rounded p-2 mb-4"
+        onChangeText={(text) => handleChange("phone", text)}
       />
       <TextInput
+        className="border border-gray-300 p-3 rounded-lg mb-3"
         placeholder="Address"
         value={formData.address}
-        onChangeText={(text) => setFormData({ ...formData, address: text })}
-        className="border border-gray-300 rounded p-2 mb-4"
+        onChangeText={(text) => handleChange("address", text)}
       />
 
-      <Button
-        title={loading ? "Saving..." : profile ? "Update" : "Create"}
-        onPress={handleSubmit}
-        disabled={loading}
-      />
-    </ScrollView>
+
+      {loading ? (
+        <ActivityIndicator size="large" color="#2563eb" />
+      ) : (
+        <Button
+          title={profile ? "Update Profile" : "Create Profile"}
+          onPress={handleSubmit}
+          color="#2563eb"
+        />
+      )}
+    </View>
   );
 };
 
-export default UpdateProfileScreen;
+export default ProfileForm;
