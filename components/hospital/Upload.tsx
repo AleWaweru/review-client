@@ -59,8 +59,8 @@ const UploadPhotos: React.FC<UploadPhotosProps> = ({ images, setImages }) => {
 
       <ScrollView horizontal>
         {images.map((uri, idx) => (
-          <View key={idx} className="relative mr-3">
-            <Image source={{ uri }} className="w-24 h-24 rounded-lg" />
+          <View key={idx} className="relative mr-3 mt-4">
+            <Image source={{ uri }} className="w-28 h-28 rounded-lg" />
             <TouchableOpacity
               onPress={() => removeImage(idx)}
               className="absolute -top-2 -right-2 bg-red-600 w-5 h-5 rounded-full items-center justify-center"

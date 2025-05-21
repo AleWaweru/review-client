@@ -2,7 +2,7 @@ import { Hospital, HospitalData, HospitalState } from "@/types/hospital";
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
 
-const API_URL = process.env.HOSPITAL_API_URL;
+const API_URL = process.env.EXPO_PUBLIC_HOSPITAL_API_URL;
 
 // CREATE hospital
 export const createHospital = createAsyncThunk<Hospital, HospitalData>(
@@ -54,7 +54,7 @@ export const fetchAllHospitals = createAsyncThunk<Hospital[]>(
 // FETCH hospital by ID
 export const fetchHospitalById = createAsyncThunk<Hospital, string>(
   "hospital/fetchById",
-  async (id, { rejectWithValue }) => {
+  async (id: string, { rejectWithValue }) => {
     try {
       const response = await axios.get(`${API_URL}/${id}`);
       return response.data.hospital;

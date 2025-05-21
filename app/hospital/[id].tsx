@@ -250,8 +250,10 @@ const HospitalDetail = () => {
               />
             ))}
 
-          {/* Display Reviews */}
+          <View className="mb-6">
+
           <ReviewDisplay hospitalId={selectedHospital._id} />
+          </View>
 
           {/* QR Code for Owner */}
           {isOwner && selectedHospital.qrCode && (
@@ -272,7 +274,7 @@ const HospitalDetail = () => {
               )}
               <TouchableOpacity
                 onPress={() => dispatch(fetchHospitalById(id as string))}
-                className="mt-4 bg-blue-500 px-5 py-2 rounded-full"
+                className="mt-4 bg-blue-500 px-5 py-2 mb-5 rounded-full"
               >
                 <Text className="text-white font-semibold">
                   🔄 Refresh QR Code

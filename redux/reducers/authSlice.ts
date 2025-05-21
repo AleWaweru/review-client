@@ -1,14 +1,14 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-const API_URL = process.env.AUTH_API_URL; 
-
+const API_URL = process.env.EXPO_PUBLIC_AUTH_API_URL; 
+console.log(API_URL);
 export const registerUser = createAsyncThunk(
   "auth/registerUser",
   async (userData: { name: string; email: string; password: string }, { rejectWithValue }) => {
     try {
       const response = await axios.post(`${API_URL}/register`, userData);
-
+      console.log("Reg response", response.data);
       // If registration is successful, return the user and token
       return { user: response.data.user, token: response.data.token };
     } catch (error: any) {

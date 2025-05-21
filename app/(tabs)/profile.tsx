@@ -7,7 +7,11 @@ import { getProfile } from '@/redux/reducers/profileSlice';
 
 const ProfileScreen = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { profile, loading, error } = useSelector((state: RootState) => state.profile);
+  
+  const profile  = useSelector((state: RootState) => state.profile.profile);
+  const loading  = useSelector((state: RootState) => state.profile.loading);
+  const  error  = useSelector((state: RootState) => state.profile.error);
+  
   const router = useRouter();
 
   useEffect(() => {

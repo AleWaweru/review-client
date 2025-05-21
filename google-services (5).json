@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "566851869540",
+    "project_id": "rateme-a8afe",
+    "storage_bucket": "rateme-a8afe.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:566851869540:android:1a3216593a28d3438f7871",
+        "android_client_info": {
+          "package_name": "com.rateme2"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "566851869540-qpasmnbe98hs78tqgc2alubhkc4kchqh.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.rateme2",
+            "certificate_hash": "7b27b510e714a27debe718c2e232f3bbc3c37edd"
+          }
+        },
+        {
+          "client_id": "566851869540-1n6clcbr90nphlrq98okodlrr9404o29.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBA0eW-TkeisJ6QMn0dhIG2kXUGiJNU_IU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "566851869540-1n6clcbr90nphlrq98okodlrr9404o29.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "566851869540-s43674sr5s1erbimpcm6ig5ai6jdtmju.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.anonymous.client"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

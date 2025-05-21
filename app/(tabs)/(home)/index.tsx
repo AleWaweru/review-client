@@ -34,7 +34,7 @@ export default function Index() {
   };
 
   return (
-    <View className="flex-1 items-center justify-center bg-white">
+    <View className="flex-1 items-center my-10 justify-center bg-white">
       {/* Header */}
       <View className="absolute top-0 w-full flex-row items-center justify-between p-4 bg-blue-600">
         <Text className="text-white text-lg font-bold">RateMe</Text>
@@ -95,7 +95,7 @@ export default function Index() {
       </View>
 
       {/* Footer */}
-      <View className="absolute bottom-0 w-full flex-col items-center bg-gray-100 p-4">
+      <View className="absolute bottom-0 w-full flex-col mb-11 items-center bg-gray-100 p-4">
         <View className="flex-row justify-around w-full">
           <Link href="/" asChild>
             <TouchableOpacity className="items-center">

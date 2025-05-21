@@ -14,6 +14,8 @@ import { AppDispatch, RootState } from "@/redux/store";
 import { registerUser } from "@/redux/reducers/authSlice";
 import { useRouter } from "expo-router";
 import googleIcon from "../../assets/images/google.png";
+import googleAuth from "./googleAuth";
+import GoogleAuth from "./googleAuth";
 
 interface SignupFormInputs {
   name: string;
@@ -123,16 +125,7 @@ const SignupScreen = () => {
         )}
       </TouchableOpacity>
       {/* Signup Link */}
-      <TouchableOpacity className="flex flex-row items-center justify-center border border-gray-400 py-3 rounded-lg mb-4 bg-white">
-        <Image
-          source={googleIcon}
-          style={{ width: 32, height: 32 }}
-          resizeMode="contain"
-        />
-        <Text className="ml-2 text-gray-800 font-semibold">
-          Sign in with Google
-        </Text>
-      </TouchableOpacity>
+       <GoogleAuth/>
       <TouchableOpacity onPress={() => router.push("/(Auth)/signinAuth")}>
         <Text className="text-blue-600 px-4 my-5 text-center">
           have an account?

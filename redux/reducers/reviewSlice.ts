@@ -5,7 +5,7 @@ import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import axios from 'axios';
 
 
-const API_URL = process.env.REVIEW_API_URL;
+const API_URL = process.env.EXPO_PUBLIC_REVIEW_API_URL;
 
 // Thunk: Submit a new review
 export const submitReview = createAsyncThunk<

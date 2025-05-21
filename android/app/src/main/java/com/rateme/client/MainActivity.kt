@@ -1,4 +1,4 @@
-package com.anonymous.client
+package com.rateme.client
 import expo.modules.splashscreen.SplashScreenManager
 
 import android.os.Build
