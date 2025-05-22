@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity } from "react-native";
+import { View, Text, TextInput, Button, ActivityIndicator } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
@@ -36,37 +36,40 @@ const ReviewForm: React.FC<ReviewFormProps> = ({ hospitalId, onClose }) => {
 
       setReviewText("");
       setRating(0);
-      onClose(); // Optional: close the form on successful submit
+      onClose();
     } catch (error) {
       console.error("Review submission failed:", error);
     }
   };
 
   const renderStars = (selectedRating: number) => (
-    <View className="flex-row">
+    <View style={{ flexDirection: "row" }}>
       {[1, 2, 3, 4, 5].map((star) => (
-        <TouchableOpacity
+        <Ionicons
           key={star}
+          name={star <= selectedRating ? "star" : "star-outline"}
+          size={28}
+          color={star <= selectedRating ? "#facc15" : "#9ca3af"}
           onPress={() => setRating(star)}
-          activeOpacity={0.7}
-        >
-          <Ionicons
-            name={star <= selectedRating ? "star" : "star-outline"}
-            size={28}
-            color={star <= selectedRating ? "#facc15" : "#9ca3af"}
-          />
-        </TouchableOpacity>
+        />
       ))}
     </View>
   );
 
   return (
     <View>
-      <Text className="text-lg font-bold mb-2 text-gray-800">
+      <Text
+        style={{
+          fontSize: 18,
+          fontWeight: "bold",
+          marginBottom: 8,
+          color: "#1f2937",
+        }}
+      >
         Leave a Review
       </Text>
 
-      <Text className="mb-1 text-gray-700">Your Rating:</Text>
+      <Text style={{ marginBottom: 4, color: "#374151" }}>Your Rating:</Text>
       {renderStars(rating)}
 
       <TextInput
@@ -74,18 +77,31 @@ const ReviewForm: React.FC<ReviewFormProps> = ({ hospitalId, onClose }) => {
         value={reviewText}
         onChangeText={setReviewText}
         multiline
-        className="border border-gray-300 rounded-md p-3 mt-3 mb-3 h-24 text-gray-800"
+        style={{
+          borderWidth: 1,
+          borderColor: "#d1d5db",
+          borderRadius: 6,
+          padding: 12,
+          marginTop: 12,
+          marginBottom: 12,
+          height: 100,
+          color: "#1f2937",
+        }}
       />
 
-      <TouchableOpacity
-        onPress={handleSubmitReview}
-        className="bg-blue-600 py-2 rounded-md items-center"
-        disabled={loading}
-      >
-        <Text className="text-white font-medium text-sm">
-          {loading ? "Submitting..." : "Submit Review"}
-        </Text>
-      </TouchableOpacity>
+      {loading ? (
+        <ActivityIndicator
+          size="large"
+          color="#2563eb"
+          style={{ marginVertical: 10 }}
+        />
+      ) : (
+        <Button
+          onPress={handleSubmitReview}
+          title="Submit Review"
+          color="#2563eb"
+        />
+      )}
     </View>
   );
 };

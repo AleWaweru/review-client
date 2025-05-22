@@ -11,7 +11,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
 import { createProfile, getProfile, updateProfile } from "@/redux/reducers/profileSlice";
 import UploadProfilePhoto from "@/components/hospital/profile/UploadProfilePhoto";
-import ToastManager, { Toast } from 'toastify-react-native'
+import { Toast } from 'toastify-react-native'
 import { useRouter } from "expo-router";
 
 

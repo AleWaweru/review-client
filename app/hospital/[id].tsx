@@ -21,7 +21,7 @@ import { AppDispatch } from "@/redux/store";
 import ReviewDisplay from "@/components/review/ReviewDisplay";
 
 import { CameraView, useCameraPermissions } from "expo-camera";
-import ReviewForm from "@/components/review/reviewForm";
+import ReviewForm from "@/components/review/ReviewForm";
 
 const HospitalDetail = () => {
   const { id } = useLocalSearchParams();
@@ -129,7 +129,10 @@ const HospitalDetail = () => {
 
   return (
     <>
-      <ScrollView className="flex-1 bg-gradient-to-b from-blue-50 to-white p-4">
+      <ScrollView
+        keyboardShouldPersistTaps="handled"
+        className="flex-1 bg-gradient-to-b from-blue-50 to-white p-4"
+      >
         {/* Top Buttons */}
         <View className="flex-row justify-between mb-6">
           <TouchableOpacity
@@ -226,7 +229,6 @@ const HospitalDetail = () => {
                   <Text className="font-semibold text-gray-800">Address:</Text>{" "}
                   {selectedHospital.location}
                 </Text>
-             
               </View>
             </View>
           )}
@@ -251,8 +253,7 @@ const HospitalDetail = () => {
             ))}
 
           <View className="mb-6">
-
-          <ReviewDisplay hospitalId={selectedHospital._id} />
+            <ReviewDisplay hospitalId={selectedHospital._id} />
           </View>
 
           {/* QR Code for Owner */}

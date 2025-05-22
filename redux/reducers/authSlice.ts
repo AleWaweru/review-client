@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
 const API_URL = process.env.EXPO_PUBLIC_AUTH_API_URL; 
-console.log(API_URL);
+console.log("login_url",API_URL);
 export const registerUser = createAsyncThunk(
   "auth/registerUser",
   async (userData: { name: string; email: string; password: string }, { rejectWithValue }) => {

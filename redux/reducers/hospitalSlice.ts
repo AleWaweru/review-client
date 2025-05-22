@@ -73,6 +73,7 @@ export const updateHospitalProfile = createAsyncThunk<
 >(
   "hospital/updateProfile",
   async ({ id, data }, { getState, rejectWithValue }) => {
+    console.log("id", id);
     try {
       const state: any = getState();
       const token = state.auth.token;

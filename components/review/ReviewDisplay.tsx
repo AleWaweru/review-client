@@ -1,16 +1,9 @@
 import React, { useEffect, useState } from "react";
-import {
-  View,
-  Text,
-  FlatList,
-  ActivityIndicator,
-  TouchableOpacity,
-} from "react-native";
+import { View, Text, ActivityIndicator, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
 import { fetchReviews } from "@/redux/reducers/reviewSlice";
-import { Review } from "@/types/review";
 
 const REVIEWS_PER_PAGE = 3;
 
@@ -26,14 +19,14 @@ const ReviewDisplay = ({ hospitalId }: { hospitalId: string }) => {
     dispatch(fetchReviews(hospitalId));
   }, [dispatch, hospitalId]);
 
-  const renderStars = (selectedRating: number) => (
+  const renderStars = (rating: number) => (
     <View className="flex-row">
       {[1, 2, 3, 4, 5].map((star) => (
         <Ionicons
           key={star}
-          name={star <= selectedRating ? "star" : "star-outline"}
+          name={star <= rating ? "star" : "star-outline"}
           size={20}
-          color={star <= selectedRating ? "#facc15" : "#9ca3af"}
+          color={star <= rating ? "#facc15" : "#9ca3af"}
         />
       ))}
     </View>
@@ -52,11 +45,12 @@ const ReviewDisplay = ({ hospitalId }: { hospitalId: string }) => {
     return "No ratings yet";
   };
 
-  const startIndex = (currentPage - 1) * REVIEWS_PER_PAGE;
-  const endIndex = startIndex + REVIEWS_PER_PAGE;
-  const paginatedReviews = reviews.slice(startIndex, endIndex);
-
   const totalPages = Math.ceil(reviews.length / REVIEWS_PER_PAGE);
+  const startIndex = (currentPage - 1) * REVIEWS_PER_PAGE;
+  const paginatedReviews = reviews.slice(
+    startIndex,
+    startIndex + REVIEWS_PER_PAGE
+  );
 
   return (
     <View className="mt-6">
@@ -83,55 +77,50 @@ const ReviewDisplay = ({ hospitalId }: { hospitalId: string }) => {
         <Text className="text-gray-500">No reviews yet.</Text>
       ) : (
         <View>
-          <FlatList
-            data={paginatedReviews}
-            keyExtractor={(item: Review) => item._id || ""}
-            renderItem={({ item }) => (
-              <View className="border-t border-gray-200 py-3">
-                <View className="flex-row items-center justify-between mb-1">
-                  <Text className="text-gray-800 font-medium">
-                    {item.user.name || "Anonymous"}
-                  </Text>
-                  <Text className="text-gray-500 text-xs">
-                    {item.createdAt
-                      ? new Date(item.createdAt).toLocaleString()
-                      : "Unknown date"}
-                  </Text>
-                </View>
-                <View className="flex-row items-center mb-1">
-                  {renderStars(item.rating)}
-                </View>
-                <Text className="text-gray-700">{item.text}</Text>
+          {paginatedReviews.map((item) => (
+            <View key={item._id} className="border-t border-gray-200 py-3">
+              <View className="flex-row justify-between mb-1">
+                <Text className="text-gray-800 font-medium">
+                  {item.user?.name || "Anonymous"}
+                </Text>
+                <Text className="text-gray-500 text-xs">
+                  {item.createdAt
+                    ? new Date(item.createdAt).toLocaleString()
+                    : "Unknown date"}
+                </Text>
               </View>
-            )}
-          />
+              <View className="flex-row mb-1">{renderStars(item.rating)}</View>
+              <Text className="text-gray-700">{item.text}</Text>
+            </View>
+          ))}
 
-          {/* Pagination Buttons */}
-          <View className="flex-row justify-between mt-3">
-            <TouchableOpacity
-              disabled={currentPage === 1}
-              onPress={() => setCurrentPage((prev) => prev - 1)}
-              className={`px-3 py-1 rounded ${
-                currentPage === 1 ? "bg-gray-300" : "bg-blue-500"
-              }`}
-            >
-              <Text className="text-white">Previous</Text>
-            </TouchableOpacity>
+          {reviews.length > REVIEWS_PER_PAGE && (
+            <View className="flex-row justify-between items-center mt-4">
+              <TouchableOpacity
+                disabled={currentPage === 1}
+                onPress={() => setCurrentPage((prev) => prev - 1)}
+                className={`px-3 py-1 rounded ${
+                  currentPage === 1 ? "bg-gray-300" : "bg-blue-500"
+                }`}
+              >
+                <Text className="text-white">Previous</Text>
+              </TouchableOpacity>
 
-            <Text className="text-gray-700">
-              Page {currentPage} of {totalPages}
-            </Text>
+              <Text className="text-gray-700">
+                Page {currentPage} of {totalPages}
+              </Text>
 
-            <TouchableOpacity
-              disabled={currentPage === totalPages}
-              onPress={() => setCurrentPage((prev) => prev + 1)}
-              className={`px-3 py-1 rounded ${
-                currentPage === totalPages ? "bg-gray-300" : "bg-blue-500"
-              }`}
-            >
-              <Text className="text-white">Next</Text>
-            </TouchableOpacity>
-          </View>
+              <TouchableOpacity
+                disabled={currentPage === totalPages}
+                onPress={() => setCurrentPage((prev) => prev + 1)}
+                className={`px-3 py-1 rounded ${
+                  currentPage === totalPages ? "bg-gray-300" : "bg-blue-500"
+                }`}
+              >
+                <Text className="text-white">Next</Text>
+              </TouchableOpacity>
+            </View>
+          )}
         </View>
       )}
     </View>
