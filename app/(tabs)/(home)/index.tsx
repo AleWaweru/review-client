@@ -34,7 +34,7 @@ export default function Index() {
   };
 
   return (
-    <View className="flex-1 items-center justify-center bg-white">
+    <View className="flex-1 items-center my-10 justify-center bg-white">
       {/* Header */}
       <View className="absolute top-0 w-full flex-row items-center justify-between p-4 bg-blue-600">
         <Text className="text-white text-lg font-bold">RateMe</Text>
@@ -87,15 +87,26 @@ export default function Index() {
         </TouchableOpacity>
       </View>
 
+      {userRole === "admin" && (
+        <TouchableOpacity
+          onPress={() => router.push("/(tabs)/signupHospital")}
+          className="mt-4 bg-blue-600 px-4 py-2 rounded-lg"
+        >
+          <Text className="text-white font-semibold">
+            Create Hospital Account
+          </Text>
+        </TouchableOpacity>
+      )}
+
       {/* Hospital List */}
-      <View className="flex-1 text-gray-500 w-full mb-12 items-center justify-center bg-gray-100">
+      <View className="flex-1 text-gray-500 w-full  items-center justify-center bg-gray-100">
         <View className="w-full max-w-md h-full bg-white py-6">
           <AllHospitals searchName={search} searchLocation={searchLocation} />
         </View>
       </View>
 
       {/* Footer */}
-      <View className="absolute bottom-0 w-full flex-col items-center bg-gray-100 p-4">
+      <View className="absolute bottom-0 w-full flex-col mb-11 items-center bg-gray-100 p-4">
         <View className="flex-row justify-around w-full">
           <Link href="/" asChild>
             <TouchableOpacity className="items-center">
@@ -116,17 +127,6 @@ export default function Index() {
             </TouchableOpacity>
           </Link>
         </View>
-
-        {userRole === "admin" && (
-          <TouchableOpacity
-            onPress={() => router.push("/(tabs)/signupHospital")}
-            className="mt-4 bg-blue-600 px-4 py-2 rounded-lg"
-          >
-            <Text className="text-white font-semibold">
-              Create Hospital Account
-            </Text>
-          </TouchableOpacity>
-        )}
       </View>
     </View>
   );

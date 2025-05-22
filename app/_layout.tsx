@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Provider, useSelector } from "react-redux";
 import { Stack, useRouter, Slot } from "expo-router";
-import { store } from "../redux/store";
-import { RootState } from "../redux/store";
+import { store, RootState } from "../redux/store";
 import 'react-native-get-random-values';
+import ToastManager from "toastify-react-native/components/ToastManager";
 
 function AuthWrapper() {
   const router = useRouter();
@@ -26,7 +26,12 @@ function AuthWrapper() {
 
   if (!isMounted) return null;
 
-  return <Slot />;
+  return (
+    <>
+      <Slot />
+      <ToastManager duration={5000} />
+    </>
+  );
 }
 
 export default function RootLayout() {

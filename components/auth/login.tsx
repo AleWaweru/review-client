@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   View,
   Text,
@@ -73,6 +73,7 @@ const LoginScreen = () => {
           >
             <Text className="text-white font-bold">User Account</Text>
           </TouchableOpacity>
+          
 
           <TouchableOpacity
             onPress={() => setSelectedRole("hospital")}

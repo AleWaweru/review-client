@@ -110,45 +110,57 @@ const UpdateHospitalForm = () => {
             setLocation(selectedAddress);
           }}
           query={{
-            key: GOOGLE_MAPS_API_KEY,
+            key: GOOGLE_MAPS_API_KEY!,
             language: "en",
             components: "country:ke",
           }}
           styles={{
-            textInput: {
-              height: 44,
-              color: "#333",
-              fontSize: 16,
-              borderColor: "#ccc",
-              borderWidth: 1,
-              borderRadius: 8,
-              paddingHorizontal: 10,
-              backgroundColor: "#fff",
+            container: {
+              flex: 0,
+              zIndex: 1000,
               marginBottom: 10,
             },
+            textInputContainer: {
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: "#ccc",
+    backgroundColor: "#fff",
+    marginBottom: 0,
+    paddingHorizontal: 0,
+    alignItems: "center", // optional for vertical alignment
+  },
+  textInput: {
+    height: 42,
+    color: "#333",
+    fontSize: 16,
+    marginBottom: 8,
+    maxWidth: "100%",
+ 
+  },
             listView: {
               backgroundColor: "#fff",
               borderColor: "#ccc",
               borderWidth: 1,
               borderRadius: 8,
               elevation: 5,
+              shadowColor: "#000",
+              shadowOffset: { width: 0, height: 2 },
+              position: "relative",
+              shadowOpacity: 0.1,
+              shadowRadius: 4,
+              marginTop: 2,
               zIndex: 1000,
-              position: "absolute",
-              top: 50,
-              left: 0,
-              right: 0,
             },
             row: {
-              padding: 13,
-              height: 44,
+              padding: 12,
               flexDirection: "row",
               alignItems: "center",
+              borderBottomColor: "#eee",
               borderBottomWidth: 1,
-              borderColor: "#eee",
             },
             separator: {
-              height: 0.5,
-              backgroundColor: "#c8c7cc",
+              height: 1,
+              backgroundColor: "#eee",
             },
             description: {
               fontSize: 14,
@@ -159,8 +171,6 @@ const UpdateHospitalForm = () => {
             },
           }}
           textInputProps={{
-            value: location,
-            onChangeText: setLocation,
             placeholderTextColor: "#999",
           }}
         />

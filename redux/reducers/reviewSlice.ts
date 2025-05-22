@@ -1,23 +1,23 @@
-// features/review/reviewSlice.ts
+import { Review, ReviewState } from "@/types/review";
+import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
+import axios from "axios";
 
-import { Review, ReviewState } from '@/types/review';
-import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import axios from 'axios';
-
-
-const API_URL = process.env.REVIEW_API_URL;
-
+const API_URL = process.env.EXPO_PUBLIC_REVIEW_API_URL;
+console.log("API_URL", API_URL);
 // Thunk: Submit a new review
 export const submitReview = createAsyncThunk<
   Review,
-  Omit<Review, '_id' | 'createdAt' | 'updatedAt'>,
+  Omit<Review, "_id" | "createdAt" | "updatedAt">,
   { rejectValue: { message: string } }
->('review/submitReview', async (reviewData, { rejectWithValue }) => {
+>("review/submitReview", async (reviewData, { rejectWithValue }) => {
   try {
     const res = await axios.post(`${API_URL}/createReview`, reviewData);
+    console.log("REVIEW", res.data);
     return res.data;
   } catch (err: any) {
-    return rejectWithValue({ message: err.response?.data?.error || 'Submission failed' });
+    return rejectWithValue({
+      message: err.response?.data?.error || "Submission failed",
+    });
   }
 });
 
@@ -26,12 +26,16 @@ export const fetchReviews = createAsyncThunk<
   Review[],
   string,
   { rejectValue: { message: string } }
->('review/fetchReviews', async (hospitalId, { rejectWithValue }) => {
+>("review/fetchReviews", async (hospitalId, { rejectWithValue }) => {
   try {
-    const res = await axios.get(`${API_URL}/${hospitalId}`);
+    const res = await axios.get(
+      `${API_URL}/getReviewsByHospital/${hospitalId}`
+    );
     return res.data;
   } catch (err: any) {
-    return rejectWithValue({ message: err.response?.data?.error || 'Fetch failed' });
+    return rejectWithValue({
+      message: err.response?.data?.error || "Fetch failed",
+    });
   }
 });
 
@@ -42,7 +46,7 @@ const initialState: ReviewState = {
 };
 
 const reviewSlice = createSlice({
-  name: 'review',
+  name: "review",
   initialState,
   reducers: {
     clearReviewError: (state) => {
@@ -56,13 +60,16 @@ const reviewSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(submitReview.fulfilled, (state, action: PayloadAction<Review>) => {
-        state.loading = false;
-        state.reviews.unshift(action.payload);
-      })
+      .addCase(
+        submitReview.fulfilled,
+        (state, action: PayloadAction<Review>) => {
+          state.loading = false;
+          state.reviews.unshift(action.payload);
+        }
+      )
       .addCase(submitReview.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload?.message || 'Failed to submit review';
+        state.error = action.payload?.message || "Failed to submit review";
       })
 
       // Fetch reviews
@@ -70,13 +77,16 @@ const reviewSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(fetchReviews.fulfilled, (state, action: PayloadAction<Review[]>) => {
-        state.loading = false;
-        state.reviews = action.payload;
-      })
+      .addCase(
+        fetchReviews.fulfilled,
+        (state, action: PayloadAction<Review[]>) => {
+          state.loading = false;
+          state.reviews = action.payload;
+        }
+      )
       .addCase(fetchReviews.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload?.message || 'Failed to fetch reviews';
+        state.error = action.payload?.message || "Failed to fetch reviews";
       });
   },
 });

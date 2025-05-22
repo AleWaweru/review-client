@@ -10,8 +10,8 @@ export interface HospitalData {
     email: string;
     phone:string;
     website:string;
-    image:string;
-    images:string[];
+    image?:string;
+    images?:string[];
     location:string;
     
   }
@@ -20,7 +20,7 @@ export interface HospitalData {
     loading: boolean;
     hospital: Hospital | null;
     error: string | null;
-    hospitals: Hospital[];         // New
-    selectedHospital: Hospital | null; // New
+    hospitals: Hospital[];        
+    selectedHospital: Hospital | null; 
   }
   
