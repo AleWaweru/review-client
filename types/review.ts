@@ -18,5 +18,6 @@ export interface Review {
     reviews: Review[];
     loading: boolean;
     error: string | null;
+    flaggedAttributes?: any[];
   }
   

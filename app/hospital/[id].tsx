@@ -21,7 +21,8 @@ import { AppDispatch } from "@/redux/store";
 import ReviewDisplay from "@/components/review/ReviewDisplay";
 
 import { CameraView, useCameraPermissions } from "expo-camera";
-import ReviewForm from "@/components/review/ReviewForm";
+import ReviewForm from "@/components/review/reviewForm";
+
 
 const HospitalDetail = () => {
   const { id } = useLocalSearchParams();

@@ -50,7 +50,7 @@ const AllHospitals: React.FC<AllHospitalsProps> = ({
   });
 
   return (
-    <View className="flex-1 p-4 bg-gray-100 mb-[6rem] w-full">
+    <View className="flex-1 p-4 bg-gray-100 mb-[4rem] w-full">
       {filteredHospitals.length === 0 ? (
         <Text className="text-center text-gray-500">No hospitals found.</Text>
       ) : (

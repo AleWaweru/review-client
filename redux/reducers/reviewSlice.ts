@@ -3,23 +3,22 @@ import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
 
 const API_URL = process.env.EXPO_PUBLIC_REVIEW_API_URL;
-console.log("API_URL", API_URL);
 // Thunk: Submit a new review
 export const submitReview = createAsyncThunk<
   Review,
   Omit<Review, "_id" | "createdAt" | "updatedAt">,
-  { rejectValue: { message: string } }
+  { rejectValue: { message: string; flaggedAttributes?: any[] } }
 >("review/submitReview", async (reviewData, { rejectWithValue }) => {
   try {
     const res = await axios.post(`${API_URL}/createReview`, reviewData);
-    console.log("REVIEW", res.data);
     return res.data;
   } catch (err: any) {
-    return rejectWithValue({
-      message: err.response?.data?.error || "Submission failed",
-    });
+    const errorMessage = err.response?.data?.message || "Submission failed";
+    const flaggedAttributes = err.response?.data?.flaggedAttributes;
+    return rejectWithValue({ message: errorMessage, flaggedAttributes });
   }
 });
+
 
 // Thunk: Fetch reviews for a hospital
 export const fetchReviews = createAsyncThunk<
@@ -43,6 +42,7 @@ const initialState: ReviewState = {
   reviews: [],
   loading: false,
   error: null,
+  flaggedAttributes: undefined,
 };
 
 const reviewSlice = createSlice({
@@ -51,25 +51,24 @@ const reviewSlice = createSlice({
   reducers: {
     clearReviewError: (state) => {
       state.error = null;
+       state.flaggedAttributes = undefined;
     },
   },
   extraReducers: (builder) => {
-    builder
-      // Submit review
+     builder
       .addCase(submitReview.pending, (state) => {
         state.loading = true;
         state.error = null;
+        state.flaggedAttributes = undefined;
       })
-      .addCase(
-        submitReview.fulfilled,
-        (state, action: PayloadAction<Review>) => {
-          state.loading = false;
-          state.reviews.unshift(action.payload);
-        }
-      )
+      .addCase(submitReview.fulfilled, (state, action: PayloadAction<Review>) => {
+        state.loading = false;
+        state.reviews.unshift(action.payload);
+      })
       .addCase(submitReview.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload?.message || "Failed to submit review";
+        state.flaggedAttributes = action.payload?.flaggedAttributes;
       })
 
       // Fetch reviews

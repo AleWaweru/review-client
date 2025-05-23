@@ -1,9 +1,17 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, Button, ActivityIndicator } from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  Button,
+  ActivityIndicator,
+  Alert,
+} from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
 import { submitReview } from "@/redux/reducers/reviewSlice";
+import { Toast } from "toastify-react-native";
 
 interface ReviewFormProps {
   hospitalId: string;
@@ -14,6 +22,9 @@ const ReviewForm: React.FC<ReviewFormProps> = ({ hospitalId, onClose }) => {
   const dispatch = useDispatch<AppDispatch>();
   const { loading } = useSelector((state: RootState) => state.reviews);
   const { user } = useSelector((state: RootState) => state.auth);
+  const { error, flaggedAttributes } = useSelector(
+    (state: RootState) => state.reviews
+  );
 
   const [rating, setRating] = useState<number>(0);
   const [reviewText, setReviewText] = useState<string>("");
@@ -37,8 +48,24 @@ const ReviewForm: React.FC<ReviewFormProps> = ({ hospitalId, onClose }) => {
       setReviewText("");
       setRating(0);
       onClose();
-    } catch (error) {
-      console.error("Review submission failed:", error);
+    } catch (error: any) {
+      const flaggedAttributes = error?.response?.data?.flaggedAttributes;
+
+      if (flaggedAttributes?.length) {
+        const reasons = flaggedAttributes
+          .map(
+            (item: any) => `${item.attribute} (score: ${item.score.toFixed(2)})`
+          )
+          .join("\n");
+
+        Toast.error(
+          `🚫 Review Rejected:\nThe system flagged your review for:\n${reasons}`
+        );
+      } else {
+        Toast.error(
+          "❌ Submission Failed: Your review could not be submitted."
+        );
+      }
     }
   };
 
